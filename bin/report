@@ -5,25 +5,25 @@ fi
 
 log_h1() {
     echo "###################"
-    echo "$@"
+    echo "# $@"
     echo "###################"
 }
 
 log_h2() {
     echo "*******************"
-    echo "$@"
+    echo "* $@"
     echo "*******************"
 }
 
 log_h3() {
     echo "==================="
-    echo "$@"
+    echo "= $@"
     echo "==================="
 }
 
 log_h4() {
     echo "-------------------"
-    echo "$@"
+    echo "- $@"
     echo "-------------------"
 }
 
@@ -216,6 +216,8 @@ main() {
     fn_networking
     fn_env
     fn_evtest
+
+    echo " !!! End of report !!!"
 }
 
 main "$@" >"/mnt/SDCARD/report.log"

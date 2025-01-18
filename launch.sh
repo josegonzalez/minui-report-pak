@@ -16,7 +16,9 @@ service_on() {
         mv "$progdir/log/service.log" "$progdir/log/service.log.old"
     fi
 
-    "$progdir/bin/report" >"$progdir/log/service.log" 2>&1 &
+    show_message "Running $HUMAN_READABLE_NAME" forever
+    PROGDIR="$progdir" "$progdir/bin/report" >"$progdir/log/service.log" 2>&1
+    show_message "Report available at /mnt/SDCARD/report.txt" 2
 }
 
 service_off() {
