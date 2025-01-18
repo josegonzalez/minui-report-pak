@@ -237,4 +237,4 @@ main() {
     echo " !!! End of report !!!"
 }
 
-main "$@" >"/mnt/SDCARD/report.log"
+main "$@"
