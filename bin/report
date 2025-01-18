@@ -188,13 +188,26 @@ fn_evtest() {
     log_h3 "is evtest available?"
     evtest || true
 
-    if [ ! -f "$PROGDIR/bin/evtest" ]; then
-        log_h3 "Vendored evtest not found"
+    evtest_bin="$PROGDIR/bin/evtest"
+    if command -v evtest >/dev/null; then
+        log_h3 "Using system evtest"
+        evtest_bin="evtest"
+    elif [ -f "$evtest_bin" ]; then
+        log_h3 "Using vendored evtest"
+    else
+        log_h3 "evtest not found"
         return
     fi
 
-    if [ ! -f "$PROGDIR/bin/coreutils" ]; then
-        log_h3 "Vendored coreutils not found"
+    system_timeout=false
+    if command -v timeout >/dev/null; then
+        log_h3 "Using system timeout"
+        system_timeout=true
+    elif [ -f "$PROGDIR/bin/coreutils" ]; then
+        log_h3 "Using vendored timeout"
+        return
+    else
+        log_h3 "timeout not found"
         return
     fi
 
@@ -204,7 +217,11 @@ fn_evtest() {
         fi
 
         log_h3 "evtest $i"
-        "$PROGDIR/bin/coreutils" timeout 3s "$PROGDIR/bin/evtest" "$i" || true
+        if [ "$system_timeout" = "true" ]; then
+            timeout 3s evtest "$i" || true
+        else
+            "$PROGDIR/bin/coreutils" timeout 3s "$evtest_bin" "$i" || true
+        fi
     done
 }
 
