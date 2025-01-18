@@ -17,8 +17,8 @@ service_on() {
     fi
 
     show_message "Running $HUMAN_READABLE_NAME" forever
-    PROGDIR="$progdir" "$progdir/bin/report" >"/mnt/SDCARD/report.log" 2>&1
-    show_message "Report available at /mnt/SDCARD/report.log" 2
+    PROGDIR="$progdir" "$progdir/bin/report" >"$SDCARD_PATH/report.log" 2>&1
+    show_message "Report available at $SDCARD_PATH/report.log" 2
 }
 
 service_off() {
