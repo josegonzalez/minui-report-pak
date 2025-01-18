@@ -146,6 +146,9 @@ fn_networking() {
     log_h3 "rfkill list all"
     rfkill list all || true
 
+    log_h3 "netstat -plan"
+    netstat -plan || true
+
     log_h3 "cat /etc/resolv.conf"
     cat /etc/resolv.conf || true
 
