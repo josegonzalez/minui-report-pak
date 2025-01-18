@@ -1,0 +1,221 @@
+#!/bin/sh
+if [ -z "$PROGDIR" ]; then
+    PROGDIR="$(dirname "$0")"
+fi
+
+log_h1() {
+    echo "###################"
+    echo "$@"
+    echo "###################"
+}
+
+log_h2() {
+    echo "*******************"
+    echo "$@"
+    echo "*******************"
+}
+
+log_h3() {
+    echo "==================="
+    echo "$@"
+    echo "==================="
+}
+
+log_h4() {
+    echo "-------------------"
+    echo "$@"
+    echo "-------------------"
+}
+
+fn_system() {
+    log_h2 "System"
+    log_h3 "uptime"
+    uptime || true
+
+    log_h3 "date"
+    date || true
+
+    log_h3 "ps aux"
+    ps aux || true
+
+    log_h3 "top -n 1 -b"
+    top -n 1 -b || true
+
+    log_h3 "free -m"
+    free -m || true
+
+    log_h3 "df -h"
+    df -h || true
+
+    log_h3 "mount"
+    mount || true
+
+    log_h3 "lsblk"
+    lsblk || true
+
+    log_h3 "lspci"
+    lspci || true
+
+    log_h3 "lsusb"
+    lsusb || true
+
+    log_h3 "lsmod"
+    lsmod || true
+
+    log_h3 "dmesg"
+    dmesg || true
+
+    log_h3 "cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_governors"
+    cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_governors || true
+
+    log_h3 "cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies"
+    cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies || true
+
+    log_h3 "find /lib -name ld-*"
+    find /lib -name ld-* || true
+
+    log_h3 "ls -l /dev"
+    ls -l /dev || true
+
+    log_h3 "ls -l /sys/class"
+    ls -l /sys/class || true
+
+    log_h3 "ls -l /sys/bus"
+    ls -l /sys/bus || true
+
+    log_h3 "ls -l /sys/devices"
+    ls -l /sys/devices || true
+
+    log_h3 "ls -l /sys/module"
+    ls -l /sys/module || true
+
+    log_h3 "ls -l /sys/firmware"
+    ls -l /sys/firmware || true
+
+    log_h3 "ls -l /sys/kernel"
+    ls -l /sys/kernel || true
+
+    log_h3 "ls -l /sys/block"
+    ls -l /sys/block || true
+
+    log_h3 "ls -l /sys/fs"
+    ls -l /sys/fs || true
+
+    log_h3 "ls -l /sys/power"
+    ls -l /sys/power || true
+
+    log_h3 "ls -l /sys/devices/system/cpu"
+    ls -l /sys/devices/system/cpu || true
+}
+
+fn_kernel() {
+    log_h2 "Kernel"
+    log_h3 "uname -a"
+    uname -a || true
+
+    log_h3 "cat /etc/os-release"
+    cat /etc/os-release || true
+
+    log_h3 "cat /etc/issue"
+    cat /etc/issue || true
+
+    log_h3 "cat /proc/version"
+    cat /proc/version || true
+
+    log_h3 "cat /proc/cmdline"
+    cat /proc/cmdline || true
+
+    log_h3 "cat /proc/cpuinfo"
+    cat /proc/cpuinfo || true
+
+    log_h3 "cat /proc/meminfo"
+    cat /proc/meminfo || true
+
+    log_h3 "cat /proc/modules"
+    cat /proc/modules || true
+}
+
+fn_networking() {
+    log_h2 "Networking"
+    log_h3 "ifconfig"
+    ifconfig || true
+
+    log_h3 "route"
+    route || true
+
+    log_h3 "rfkill list all"
+    rfkill list all || true
+
+    log_h3 "cat /etc/resolv.conf"
+    cat /etc/resolv.conf || true
+
+    log_h3 "cat /etc/hosts"
+    cat /etc/hosts || true
+
+    log_h3 "cat /etc/hostname"
+    cat /etc/hostname || true
+
+    log_h3 "cat /etc/network/interfaces"
+    cat /etc/network/interfaces || true
+
+    log_h3 "cat /etc/networks"
+    cat /etc/networks || true
+
+    log_h3 "cat /etc/protocols"
+    cat /etc/protocols || true
+
+    log_h3 "cat /etc/services"
+    cat /etc/services || true
+}
+
+fn_env() {
+    log_2 "Environment"
+    log_h3 "env"
+    env || true
+
+    log_h3 "echo $SHELL"
+    $SHELL --version
+
+    log_h3 "is python available?"
+    python -V || true
+
+    log_h3 "is bash available?"
+    bash --version || true
+}
+
+fn_evtest() {
+    log_h2 "evtest"
+    log_h3 "is evtest available?"
+    evtest || true
+
+    if [ ! -f "$PROGDIR/bin/evtest" ]; then
+        log_h3 "Vendored evtest not found"
+        return
+    fi
+
+    if [ ! -f "$PROGDIR/bin/coreutils" ]; then
+        log_h3 "Vendored coreutils not found"
+        return
+    fi
+
+    for i in /dev/input/event*; do
+        if [ ! -e "$i" ]; then
+            break
+        fi
+
+        log_h3 "evtest $i"
+        "$PROGDIR/bin/coreutils" timeout 3s "$PROGDIR/bin/evtest" "$i" || true
+    done
+}
+
+main() {
+    log_h1 "Start of report: $(date "+%Y-%m-%d %H:%M:%S")"
+
+    fn_system
+    fn_kernel
+    fn_networking
+    fn_env
+    fn_evtest
+}
+
+main "$@" >"/mnt/SDCARD/report.log"

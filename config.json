@@ -1,0 +1,5 @@
+{
+    "label": "Report",
+    "launch": "launch.sh",
+    "description": "Generates a report for development purposes"
+}

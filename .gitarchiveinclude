@@ -1,0 +1,5 @@
+bin/evtest
+bin/sdl2imgshow
+bin/coreutils
+bin/coreutils.LICENSE
+res/fonts/BPreplayBold.otf
