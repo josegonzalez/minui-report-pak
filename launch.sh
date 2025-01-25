@@ -9,9 +9,10 @@ BUTTON_LOG="$progdir/log/buttons.log"
 
 SERVICE_NAME="report"
 HUMAN_READABLE_NAME="Report"
-SUPPORTS_DAEMON_MODE=0
+ONLY_LAUNCH_THEN_EXIT=1
+LAUNCHES_SCRIPT="true"
 service_on() {
-    cd /mnt/SDCARD/ || exit
+    cd "$SDCARD_PATH" || exit 1
     if [ -f "$progdir/log/service.log" ]; then
         mv "$progdir/log/service.log" "$progdir/log/service.log.old"
     fi
