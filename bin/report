@@ -137,6 +137,9 @@ fn_system() {
 
     log_h3 "ls -l /sys/devices/system/cpu"
     ls -l /sys/devices/system/cpu || true
+
+    log_h3 "systemctl status"
+    systemctl status || true
 }
 
 fn_kernel() {
