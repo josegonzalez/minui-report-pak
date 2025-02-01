@@ -43,7 +43,7 @@ show_message() {
             -s 27 \
             -c "220,220,220" \
             -q \
-            -t "$message" &
+            -t "$message" >/dev/null 2>&1 &
     else
         "$progdir/bin/sdl2imgshow" \
             -i "$progdir/res/background.png" \
@@ -51,7 +51,7 @@ show_message() {
             -s 27 \
             -c "220,220,220" \
             -q \
-            -t "$message"
+            -t "$message" >/dev/null 2>&1
         sleep "$seconds"
     fi
 }
