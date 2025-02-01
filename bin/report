@@ -220,7 +220,7 @@ fn_env() {
 fn_evtest() {
     log_h2 "evtest"
     log_h3 "is evtest available?"
-    evtest || true
+    command -v evtest >/dev/null || true
 
     evtest_bin="$PROGDIR/bin/evtest"
     if command -v evtest >/dev/null; then
@@ -239,7 +239,6 @@ fn_evtest() {
         system_timeout=true
     elif [ -f "$PROGDIR/bin/coreutils" ]; then
         log_h3 "Using vendored timeout"
-        return
     else
         log_h3 "timeout not found"
         return
