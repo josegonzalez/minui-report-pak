@@ -218,7 +218,7 @@ fn_networking() {
 }
 
 fn_env() {
-    log_2 "Environment"
+    log_h2 "Environment"
     log_h3 "env"
     env || true
 
