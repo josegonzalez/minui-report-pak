@@ -215,6 +215,9 @@ fn_networking() {
 
     log_h3 "cat /etc/wpa_supplicant/wpa_supplicant.conf"
     cat /etc/wpa_supplicant/wpa_supplicant.conf || true
+
+    log_h3 "cat /sys/class/net/wlan0/carrier"
+    cat /sys/class/net/wlan0/carrier || true
 }
 
 fn_env() {
