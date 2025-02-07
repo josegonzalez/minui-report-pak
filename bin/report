@@ -203,6 +203,18 @@ fn_networking() {
 
     log_h3 "cat /etc/services"
     cat /etc/services || true
+
+    log_h3 "ls -lah /etc/wifi"
+    ls -lah /etc/wifi || true
+
+    log_h3 "cat /etc/wifi/wpa_supplicant.conf"
+    cat /etc/wifi/wpa_supplicant.conf || true
+
+    log_h3 "ls -lah /etc/wpa_supplicant"
+    ls -lah /etc/wpa_supplicant || true
+
+    log_h3 "cat /etc/wpa_supplicant/wpa_supplicant.conf"
+    cat /etc/wpa_supplicant/wpa_supplicant.conf || true
 }
 
 fn_env() {
