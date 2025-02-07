@@ -24,6 +24,13 @@ log_h3() {
     show_message "$@" forever
 }
 
+log_h4() {
+    echo "-------------------"
+    echo "- $@"
+    echo "-------------------"
+    show_message "$@" forever
+}
+
 show_message() {
     message="$1"
     seconds="$2"
@@ -243,8 +250,31 @@ fn_env() {
     log_h3 "is python available?"
     python -V || true
 
+    log_h3 "is python3 available?"
+    python3 -V || true
+
     log_h3 "is bash available?"
-    bash --version || true
+    if command -v bash >/dev/null; then
+        system_timeout=false
+        if command -v timeout >/dev/null; then
+            log_h4 "Using system timeout"
+            system_timeout=true
+        elif [ -f "$PROGDIR/bin/coreutils" ]; then
+            log_h4 "Using vendored timeout"
+        else
+            log_h4 "timeout not found"
+            command -v bash 2>&1 || true
+            return
+        fi
+
+        if [ "$system_timeout" = "true" ]; then
+            timeout 3s bash --version || true
+        else
+            "$PROGDIR/bin/coreutils" timeout 3s bash --version || true
+        fi
+    else
+        echo "bash not found"
+    fi
 }
 
 fn_evtest() {
