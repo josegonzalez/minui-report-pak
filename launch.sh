@@ -4,7 +4,6 @@ progdir="$(dirname "$0")"
 cd "$progdir" || exit 1
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$progdir/lib"
 echo 1 >/tmp/stay_awake
-trap "rm -f /tmp/stay_awake" EXIT INT TERM HUP QUIT
 BUTTON_LOG="$progdir/log/buttons.log"
 
 SERVICE_NAME="report"
@@ -194,7 +193,14 @@ main_process() {
     show_message "Done" 1
 }
 
+cleanup() {
+    rm -f /tmp/stay_awake
+    killall sdl2imgshow >/dev/null 2>&1 || true
+}
+
 main() {
+    trap "cleanup" EXIT INT TERM HUP QUIT
+
     if [ "$ONLY_LAUNCH_THEN_EXIT" -eq 1 ]; then
         service_on
         return $?
