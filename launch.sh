@@ -9,8 +9,7 @@ echo 1 >/tmp/stay_awake
 
 SERVICE_NAME="report"
 HUMAN_READABLE_NAME="Report"
-ONLY_LAUNCH_THEN_EXIT=1
-LAUNCHES_SCRIPT="true"
+
 service_on() {
     cd "$SDCARD_PATH" || return 1
 
@@ -53,77 +52,6 @@ show_message() {
     fi
 }
 
-is_service_running() {
-    if pgrep "$SERVICE_NAME" >/dev/null 2>&1; then
-        return 0
-    fi
-
-    if [ "$LAUNCHES_SCRIPT" = "true" ]; then
-        if pgrep -fn "$SERVICE_NAME" >/dev/null 2>&1; then
-            return 0
-        fi
-    fi
-
-    return 1
-}
-
-wait_for_service() {
-    max_counter="$1"
-    counter=0
-
-    while ! is_service_running; do
-        counter=$((counter + 1))
-        if [ "$counter" -gt "$max_counter" ]; then
-            return 1
-        fi
-        sleep 1
-    done
-}
-
-main_daemonize() {
-    echo "Toggling $SERVICE_NAME..."
-    if is_service_running; then
-        show_message "Disabling the $HUMAN_READABLE_NAME" 2
-        service_off
-    else
-        show_message "Enabling the $HUMAN_READABLE_NAME" 2
-        service_on
-
-        if ! wait_for_service 10; then
-            show_message "Failed to start $HUMAN_READABLE_NAME" 2
-            return 1
-        fi
-    fi
-
-    show_message "Done" 1
-}
-
-main_process() {
-    if is_service_running; then
-        show_message "Disabling the $HUMAN_READABLE_NAME" 2
-        service_off
-    fi
-
-    show_message "Starting $HUMAN_READABLE_NAME" 2
-    service_on
-    sleep 1
-
-    echo "Waiting for $HUMAN_READABLE_NAME to be running"
-    if ! wait_for_service 10; then
-        show_message "Failed to start $HUMAN_READABLE_NAME" 2
-        return 1
-    fi
-
-    show_message "Press B to exit"
-
-    "$progdir/bin/minui-btntest-$PLATFORM" wait just_pressed all btn_b
-    show_message "Stopping $HUMAN_READABLE_NAME"
-    service_off
-    sync
-    sleep 1
-    show_message "Done" 1
-}
-
 cleanup() {
     rm -f /tmp/stay_awake
     killall sdl2imgshow >/dev/null 2>&1 || true
@@ -132,16 +60,7 @@ cleanup() {
 main() {
     trap "cleanup" EXIT INT TERM HUP QUIT
 
-    if [ "$ONLY_LAUNCH_THEN_EXIT" -eq 1 ]; then
-        service_on
-        return $?
-    fi
-
-    if [ -f "$progdir/daemon-mode" ]; then
-        main_daemonize
-    else
-        main_process
-    fi
+    service_on
     killall sdl2imgshow >/dev/null 2>&1 || true
 }
 
