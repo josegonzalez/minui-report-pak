@@ -31,6 +31,11 @@ log_h4() {
     show_message "$@" forever
 }
 
+log_warning() {
+    echo "! $@"
+    show_message "! $@" forever
+}
+
 show_message() {
     message="$1"
     seconds="$2"
@@ -244,14 +249,26 @@ fn_env() {
     log_h3 "env"
     env || true
 
-    log_h3 "echo $SHELL"
-    $SHELL --version
+    log_h3 "echo shell: $SHELL"
+    if [ -n "$SHELL" ]; then
+        "$SHELL" --version || true
+    else
+        log_warning "SHELL environment variable not set"
+    fi
 
     log_h3 "is python available?"
-    python -V || true
+    if command -v python >/dev/null; then
+        python -V || true
+    else
+        log_warning "python not found"
+    fi
 
     log_h3 "is python3 available?"
-    python3 -V || true
+    if command -v python3 >/dev/null; then
+        python3 -V || true
+    else
+        log_warning "python3 not found"
+    fi
 
     log_h3 "is bash available?"
     if command -v bash >/dev/null; then
@@ -262,7 +279,7 @@ fn_env() {
         elif [ -f "$PROGDIR/bin/coreutils" ]; then
             log_h4 "Using vendored timeout"
         else
-            log_h4 "timeout not found"
+            log_warning "timeout not found"
             command -v bash 2>&1 || true
             return
         fi
@@ -273,7 +290,7 @@ fn_env() {
             "$PROGDIR/bin/coreutils" timeout 3s bash --version || true
         fi
     else
-        echo "bash not found"
+        log_warning "bash not found"
     fi
 }
 
@@ -289,7 +306,7 @@ fn_evtest() {
     elif [ -f "$evtest_bin" ]; then
         log_h3 "Using vendored evtest"
     else
-        log_h3 "evtest not found"
+        log_warning "evtest not found"
         return
     fi
 
@@ -300,7 +317,7 @@ fn_evtest() {
     elif [ -f "$PROGDIR/bin/coreutils" ]; then
         log_h3 "Using vendored timeout"
     else
-        log_h3 "timeout not found"
+        log_warning "timeout not found"
         return
     fi
 
