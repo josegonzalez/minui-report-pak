@@ -43,7 +43,7 @@ show_message() {
         seconds="forever"
     fi
 
-    killall sdl2imgshow
+    killall sdl2imgshow >/dev/null 2>&1
     echo "$message"
     if [ "$seconds" = "forever" ]; then
         "$PROGDIR/bin/sdl2imgshow" \
