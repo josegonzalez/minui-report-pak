@@ -1,5 +1,9 @@
 {
     "label": "Report",
     "launch": "launch.sh",
-    "description": "Generates a report for development purposes"
+    "description": "Generates a report for development purposes",
+    "platforms": [
+        "rg35xxplus",
+        "tg5040"
+    ]
 }
