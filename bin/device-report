@@ -1,7 +1,13 @@
 #!/bin/sh
-if [ -z "$PROGDIR" ]; then
-    PROGDIR="$(dirname "$0")"
+BIN_DIR="$(dirname "$0")"
+PAK_DIR="$(dirname "$BIN_DIR")"
+
+architecture=arm
+if uname -m | grep -q '64'; then
+    architecture=arm64
 fi
+
+export PATH="$PAK_DIR/bin/$architecture:$PAK_DIR/bin:$PATH"
 
 log_h1() {
     echo "###################"
@@ -40,33 +46,16 @@ show_message() {
     message="$1"
     seconds="$2"
 
-    if [ ! -x "$PROGDIR/bin/sdl2imgshow" ]; then
-        return
-    fi
-
     if [ -z "$seconds" ]; then
         seconds="forever"
     fi
 
-    killall sdl2imgshow >/dev/null 2>&1
-    echo "$message"
+    killall minui-presenter >/dev/null 2>&1 || true
+    echo "$message" 1>&2
     if [ "$seconds" = "forever" ]; then
-        "$PROGDIR/bin/sdl2imgshow" \
-            -i "$PROGDIR/res/background.png" \
-            -f "$PROGDIR/res/fonts/BPreplayBold.otf" \
-            -s 27 \
-            -c "220,220,220" \
-            -q \
-            -t "$message" >/dev/null 2>&1 &
+        minui-presenter --message "$message" --timeout -1 &
     else
-        "$PROGDIR/bin/sdl2imgshow" \
-            -i "$PROGDIR/res/background.png" \
-            -f "$PROGDIR/res/fonts/BPreplayBold.otf" \
-            -s 27 \
-            -c "220,220,220" \
-            -q \
-            -t "$message" >/dev/null 2>&1
-        sleep "$seconds"
+        minui-presenter --message "$message" --timeout "$seconds"
     fi
 }
 
@@ -242,6 +231,13 @@ fn_networking() {
 
     log_h3 "cat /sys/class/net/wlan0/operstate"
     cat /sys/class/net/wlan0/operstate || true
+
+    log_h3 "wpa_supplicant -v"
+    if command -v wpa_supplicant >/dev/null; then
+        wpa_supplicant -v || true
+    else
+        log_warning "wpa_supplicant not found"
+    fi
 }
 
 fn_env() {
@@ -276,7 +272,7 @@ fn_env() {
         if command -v timeout >/dev/null; then
             log_h4 "Using system timeout"
             system_timeout=true
-        elif [ -f "$PROGDIR/bin/coreutils" ]; then
+        elif [ -f "$PAK_DIR/bin/$architecture/coreutils" ]; then
             log_h4 "Using vendored timeout"
         else
             log_warning "timeout not found"
@@ -287,7 +283,7 @@ fn_env() {
         if [ "$system_timeout" = "true" ]; then
             timeout 3s bash --version || true
         else
-            "$PROGDIR/bin/coreutils" timeout 3s bash --version || true
+            "$PAK_DIR/bin/$architecture/coreutils" timeout 3s bash --version || true
         fi
     else
         log_warning "bash not found"
@@ -299,7 +295,7 @@ fn_evtest() {
     log_h3 "is evtest available?"
     command -v evtest >/dev/null || true
 
-    evtest_bin="$PROGDIR/bin/evtest"
+    evtest_bin="$PAK_DIR/bin/$architecture/evtest"
     if command -v evtest >/dev/null; then
         log_h3 "Using system evtest"
         evtest_bin="evtest"
@@ -314,7 +310,7 @@ fn_evtest() {
     if command -v timeout >/dev/null; then
         log_h3 "Using system timeout"
         system_timeout=true
-    elif [ -f "$PROGDIR/bin/coreutils" ]; then
+    elif [ -f "$PAK_DIR/bin/$architecture/coreutils" ]; then
         log_h3 "Using vendored timeout"
     else
         log_warning "timeout not found"
@@ -328,15 +324,19 @@ fn_evtest() {
 
         log_h3 "evtest $i"
         if [ "$system_timeout" = "true" ]; then
-            timeout 3s evtest "$i" || true
+            timeout 3s "$evtest_bin" "$i" || true
         else
-            "$PROGDIR/bin/coreutils" timeout 3s "$evtest_bin" "$i" || true
+            "$PAK_DIR/bin/$architecture/coreutils" timeout 3s "$evtest_bin" "$i" || true
         fi
     done
 }
 
 main() {
     log_h1 "Start of report: $(date "+%Y-%m-%d %H:%M:%S")"
+
+    if ! command -v minui-presenter >/dev/null; then
+        echo "! missing minui-presenter" 1>&2
+    fi
 
     fn_system
     fn_kernel
