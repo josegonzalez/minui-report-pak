@@ -4,4 +4,4 @@ bin/*
 res/fonts/*
 !res/fonts/.gitkeep
 
-!bin/report
+!bin/device-report

@@ -1,5 +1,6 @@
-bin/evtest
-bin/sdl2imgshow
-bin/coreutils
-bin/coreutils.LICENSE
-res/fonts/BPreplayBold.otf
+bin/arm64/evtest
+bin/arm64/evtest.LICENSE
+bin/arm64/coreutils
+bin/arm64/coreutils.LICENSE
+bin/tg5040/minui-presenter
+bin/rg35xxplus/minui-presenter

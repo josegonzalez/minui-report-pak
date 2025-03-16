@@ -1,42 +1,40 @@
 TAG ?= latest
 BUILD_DATE := "$(shell date -u +%FT%TZ)"
 PAK_NAME := $(shell jq -r .label config.json)
+
+PLATFORMS := rg35xxplus tg5040
+ARCHITECTURES := arm64
+
 COREUTILS_VERSION := 0.0.28
+EVTEST_VERSION := 0.1.0
+MINUI_PRESENTER_VERSION := 0.3.1
 
 clean:
-	rm -rf bin/evtest || true
-	rm -f bin/sdl2imgshow || true
-	rm -f bin/coreutils || true
-	rm -f bin/coreutils.LICENSE || true
-	rm -f res/fonts/BPreplayBold.otf || true
+	rm -f bin/*/evtest || true
+	rm -f bin/*/coreutils || true
+	rm -f bin/*/minui-presenter || true
 
-build: bin/evtest bin/sdl2imgshow bin/coreutils res/fonts/BPreplayBold.otf
+build: $(foreach platform,$(PLATFORMS),bin/$(platform)/minui-presenter) $(foreach arch,$(ARCHITECTURES),bin/$(arch)/evtest bin/$(arch)/coreutils)
 
-bin/evtest:
-	docker buildx build --platform linux/arm64 --load -f Dockerfile.evtest --progress plain -t app/evtest:$(TAG) .
-	docker container create --name extract app/evtest:$(TAG)
-	docker container cp extract:/go/src/github.com/freedesktop/evtest/evtest bin/evtest
-	docker container rm extract
-	chmod +x bin/evtest
+bin/%/evtest:
+	mkdir -p bin/$*
+	curl -sSL -o bin/$*/evtest https://github.com/josegonzalez/compiled-evtest/releases/download/$(EVTEST_VERSION)/evtest-$*
+	curl -sSL -o bin/$*/evtest.LICENSE "https://raw.githubusercontent.com/freedesktop-unofficial-mirror/evtest/refs/heads/master/COPYING"
+	chmod +x bin/$*/evtest
 
-bin/sdl2imgshow:
-	docker buildx build --platform linux/arm64 --load -f Dockerfile.sdl2imgshow --progress plain -t app/sdl2imgshow:$(TAG) .
-	docker container create --name extract app/sdl2imgshow:$(TAG)
-	docker container cp extract:/go/src/github.com/kloptops/sdl2imgshow/build/sdl2imgshow bin/sdl2imgshow
-	docker container rm extract
-	chmod +x bin/sdl2imgshow
+bin/%/minui-presenter:
+	mkdir -p bin/$*
+	curl -sSL -o bin/$*/minui-presenter https://github.com/josegonzalez/minui-presenter/releases/download/$(MINUI_PRESENTER_VERSION)/minui-presenter-$*
+	chmod +x bin/$*/minui-presenter
 
-bin/coreutils:
-	curl -sSL -o bin/coreutils.tar.gz "https://github.com/uutils/coreutils/releases/download/$(COREUTILS_VERSION)/coreutils-$(COREUTILS_VERSION)-aarch64-unknown-linux-gnu.tar.gz"
-	tar -xzf bin/coreutils.tar.gz -C bin --strip-components=1
-	rm bin/coreutils.tar.gz
-	chmod +x bin/coreutils
-	mv bin/LICENSE bin/coreutils.LICENSE
-	rm bin/README.md bin/README.package.md || true
-
-res/fonts/BPreplayBold.otf:
-	mkdir -p res/fonts
-	curl -sSL -o res/fonts/BPreplayBold.otf "https://raw.githubusercontent.com/shauninman/MinUI/refs/heads/main/skeleton/SYSTEM/res/BPreplayBold-unhinted.otf"
+bin/arm64/coreutils:
+	mkdir -p bin/arm64
+	curl -sSL -o bin/arm64/coreutils.tar.gz "https://github.com/uutils/coreutils/releases/download/$(COREUTILS_VERSION)/coreutils-$(COREUTILS_VERSION)-aarch64-unknown-linux-gnu.tar.gz"
+	tar -xzf bin/arm64/coreutils.tar.gz -C bin/arm64 --strip-components=1
+	rm bin/arm64/coreutils.tar.gz
+	chmod +x bin/arm64/coreutils
+	mv bin/arm64/LICENSE bin/arm64/coreutils.LICENSE
+	rm bin/arm64/README.md bin/arm64/README.package.md || true
 
 release: build
 	mkdir -p dist
