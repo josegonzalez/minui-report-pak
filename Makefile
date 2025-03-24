@@ -2,8 +2,8 @@ TAG ?= latest
 BUILD_DATE := "$(shell date -u +%FT%TZ)"
 PAK_NAME := $(shell jq -r .label config.json)
 
-PLATFORMS := rg35xxplus tg5040
-ARCHITECTURES := arm64
+PLATFORMS := rg35xxplus tg5040 trimuismart
+ARCHITECTURES := arm arm64
 
 COREUTILS_VERSION := 0.0.28
 EVTEST_VERSION := 0.1.0
@@ -26,6 +26,15 @@ bin/%/minui-presenter:
 	mkdir -p bin/$*
 	curl -sSL -o bin/$*/minui-presenter https://github.com/josegonzalez/minui-presenter/releases/download/$(MINUI_PRESENTER_VERSION)/minui-presenter-$*
 	chmod +x bin/$*/minui-presenter
+
+bin/arm/coreutils:
+	mkdir -p bin/arm
+	curl -sSL -o bin/arm/coreutils.tar.gz "https://github.com/uutils/coreutils/releases/download/$(COREUTILS_VERSION)/coreutils-$(COREUTILS_VERSION)-arm-unknown-linux-gnueabihf.tar.gz"
+	tar -xzf bin/arm/coreutils.tar.gz -C bin/arm --strip-components=1
+	rm bin/arm/coreutils.tar.gz
+	chmod +x bin/arm/coreutils
+	mv bin/arm/LICENSE bin/arm/coreutils.LICENSE
+	rm bin/arm/README.md bin/arm/README.package.md || true
 
 bin/arm64/coreutils:
 	mkdir -p bin/arm64
