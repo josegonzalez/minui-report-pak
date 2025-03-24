@@ -1,6 +1,11 @@
+bin/arm/evtest
+bin/arm/evtest.LICENSE
+bin/arm/coreutils
+bin/arm/coreutils.LICENSE
 bin/arm64/evtest
 bin/arm64/evtest.LICENSE
 bin/arm64/coreutils
 bin/arm64/coreutils.LICENSE
-bin/tg5040/minui-presenter
 bin/rg35xxplus/minui-presenter
+bin/tg5040/minui-presenter
+bin/trimuismart/minui-presenter

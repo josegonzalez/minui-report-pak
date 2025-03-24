@@ -4,6 +4,7 @@
     "description": "Generates a report for development purposes",
     "platforms": [
         "rg35xxplus",
-        "tg5040"
+        "tg5040",
+        "trimuismart"
     ]
 }
