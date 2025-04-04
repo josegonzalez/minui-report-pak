@@ -24,7 +24,7 @@ bin/%/evtest:
 
 bin/%/minui-presenter:
 	mkdir -p bin/$*
-	curl -sSL -o bin/$*/minui-presenter https://github.com/josegonzalez/minui-presenter/releases/download/$(MINUI_PRESENTER_VERSION)/minui-presenter-$*
+	curl -f -o bin/$*/minui-presenter -sSL https://github.com/josegonzalez/minui-presenter/releases/download/$(MINUI_PRESENTER_VERSION)/minui-presenter-$*
 	chmod +x bin/$*/minui-presenter
 
 bin/arm/coreutils:
