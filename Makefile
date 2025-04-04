@@ -7,7 +7,7 @@ ARCHITECTURES := arm arm64
 
 COREUTILS_VERSION := 0.0.28
 EVTEST_VERSION := 0.1.0
-MINUI_PRESENTER_VERSION := 0.4.0
+MINUI_PRESENTER_VERSION := 0.7.0
 
 clean:
 	rm -f bin/*/evtest || true
