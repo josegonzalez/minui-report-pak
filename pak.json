@@ -1,15 +1,15 @@
 {
-    "name": "Report",
-    "type": "TOOL",
-    "description": "Generates a report for development purposes",
-    "author": "josegonzalez",
-    "repo_url": "https://github.com/josegonzalez/minui-report-pak",
-    "release_filename": "Report.pak.zip",
-    "platforms": [
-        "rg35xxplus",
-        "tg5040",
-        "trimuismart"
-    ],
-    "launch": "launch.sh",
-    "version": "latest"
+  "name": "Report",
+  "type": "TOOL",
+  "description": "Generates a report for development purposes",
+  "author": "josegonzalez",
+  "repo_url": "https://github.com/josegonzalez/minui-report-pak",
+  "release_filename": "Report.pak.zip",
+  "platforms": [
+    "rg35xxplus",
+    "tg5040",
+    "trimuismart"
+  ],
+  "launch": "launch.sh",
+  "version": "0.7.3"
 }
