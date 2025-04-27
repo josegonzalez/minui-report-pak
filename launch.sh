@@ -32,10 +32,6 @@ service_on() {
     show_message "Report available at $SDCARD_PATH/report.txt" 2
 }
 
-service_off() {
-    killall "$SERVICE_NAME"
-}
-
 show_message() {
     message="$1"
     seconds="$2"
