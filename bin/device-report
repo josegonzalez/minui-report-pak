@@ -141,6 +141,15 @@ fn_system() {
 
     log_h3 "systemctl status"
     systemctl status || true
+
+    log_h3 "cat /userdata/system.json"
+    cat /userdata/system.json || true
+
+    log_h3 "cat /mnt/UDISK/system.json"
+    cat /mnt/UDISK/system.json || true
+
+    log_h3 "cat /config/system.json"
+    cat /config/system.json || true
 }
 
 fn_kernel() {
@@ -222,6 +231,15 @@ fn_networking() {
 
     log_h3 "cat /etc/wpa_supplicant/wpa_supplicant.conf"
     cat /etc/wpa_supplicant/wpa_supplicant.conf || true
+
+    log_h3 "cat /appconfigs/wpa_supplicant.conf"
+    cat /appconfigs/wpa_supplicant.conf || true
+
+    log_h3 "cat /config/wpa_supplicant.conf"
+    cat /config/wpa_supplicant.conf || true
+
+    log_h3 "cat /userdata/cfg/wpa_supplicant.conf"
+    cat /userdata/cfg/wpa_supplicant.conf || true
 
     log_h3 "cat /sys/class/net/wlan0/carrier"
     cat /sys/class/net/wlan0/carrier || true
