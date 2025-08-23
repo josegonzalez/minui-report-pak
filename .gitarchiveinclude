@@ -6,6 +6,9 @@ bin/arm64/evtest
 bin/arm64/evtest.LICENSE
 bin/arm64/coreutils
 bin/arm64/coreutils.LICENSE
+bin/miyoomini/minui-presenter
+bin/my282/minui-presenter
+bin/my355/minui-presenter
 bin/rg35xxplus/minui-presenter
 bin/tg5040/minui-presenter
 bin/trimuismart/minui-presenter

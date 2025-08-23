@@ -6,7 +6,7 @@ PUSH_SDCARD_PATH ?= /mnt/SDCARD
 PUSH_PLATFORM ?= tg5040
 
 ARCHITECTURES := arm arm64
-PLATFORMS := rg35xxplus tg5040 trimuismart
+PLATFORMS := miyoomini my282 my355 rg35xxplus tg5040 trimuismart
 
 COREUTILS_VERSION := 0.0.28
 EVTEST_VERSION := 0.1.0
