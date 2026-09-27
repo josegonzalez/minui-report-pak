@@ -21,6 +21,10 @@ export HOME="$USERDATA_PATH/$PAK_NAME"
 export LD_LIBRARY_PATH="$PAK_DIR/lib:$LD_LIBRARY_PATH"
 export PATH="$PAK_DIR/bin/$architecture:$PAK_DIR/bin/$PLATFORM:$PAK_DIR/bin:$PATH"
 
+if [ "$DEVICE" = "rgsp" ]; then
+    export RGXX_MODEL="RG34xx"
+fi
+
 HUMAN_READABLE_NAME="Report"
 
 service_on() {
