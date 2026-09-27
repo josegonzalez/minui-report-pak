@@ -6,6 +6,7 @@
   "repo_url": "https://github.com/josegonzalez/minui-report-pak",
   "release_filename": "Report.pak.zip",
   "platforms": [
+    "h700",
     "miyoomini",
     "my282",
     "my355",

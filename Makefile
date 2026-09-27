@@ -6,11 +6,11 @@ PUSH_SDCARD_PATH ?= /mnt/SDCARD
 PUSH_PLATFORM ?= tg5040
 
 ARCHITECTURES := arm arm64
-PLATFORMS := miyoomini my282 my355 rg35xxplus tg5040 tg5050 trimuismart
+PLATFORMS := h700 miyoomini my282 my355 rg35xxplus tg5040 tg5050 trimuismart
 
 COREUTILS_VERSION := 0.0.28
 EVTEST_VERSION := 0.1.0
-MINUI_PRESENTER_VERSION := 0.12.0
+MINUI_PRESENTER_VERSION := 0.13.4
 
 clean:
 	rm -f bin/*/evtest || true
@@ -24,6 +24,16 @@ bin/%/evtest:
 	curl -sSL -o bin/$*/evtest https://github.com/josegonzalez/compiled-evtest/releases/download/$(EVTEST_VERSION)/evtest-$*
 	curl -sSL -o bin/$*/evtest.LICENSE "https://raw.githubusercontent.com/freedesktop-unofficial-mirror/evtest/refs/heads/master/COPYING"
 	chmod +x bin/$*/evtest
+
+bin/h700/minui-presenter:
+	mkdir -p bin/h700
+	curl -f -o bin/h700/minui-presenter -sSL https://github.com/josegonzalez/minui-presenter/releases/download/$(MINUI_PRESENTER_VERSION)/minui-presenter-h700-nextui
+	chmod +x bin/h700/minui-presenter
+
+bin/tg5050/minui-presenter:
+	mkdir -p bin/tg5050
+	curl -f -o bin/tg5050/minui-presenter -sSL https://github.com/josegonzalez/minui-presenter/releases/download/$(MINUI_PRESENTER_VERSION)/minui-presenter-tg5050-nextui
+	chmod +x bin/tg5050/minui-presenter
 
 bin/%/minui-presenter:
 	mkdir -p bin/$*
